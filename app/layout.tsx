@@ -1,7 +1,10 @@
+"use client";
 import "./globals.css";
+import React, { useState } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navigation from "@/components/Navigation/Navigation";
+import SideNavbar from "@/components/Navigation/SideNavbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,14 +27,25 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
     <html lang="en">
       <link rel="icon" type="image/x-icon" href={`/img/companyFavicon.png`} />
-      <body
-        className={`bg-[url('/img/HeroImage.png')] bg-cover bg-no-repeat ${inter.className}`}
-      >
-        <Navigation />
-        <div className="pt-[95px] md:pt-[135px]">{children}</div>
+      <body className={`bg-[#F0F2F5] bg-cover bg-no-repeat ${inter.className}`}>
+        <Navigation setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
+        <div className="pt-[95px] lg:pt-[135px] flex">
+          <div
+            className={`py-16 bg-dark-blue fixed h-screen transition-all ${
+              sidebarOpen
+                ? "top-24 sm:top-32 left-0"
+                : "top-24 sm:top-32 -left-[320.75px]"
+            }`}
+          >
+            <SideNavbar setSidebarOpen={setSidebarOpen} />
+          </div>
+          <div className="lg:ps-96">{children}</div>
+        </div>
       </body>
     </html>
   );
