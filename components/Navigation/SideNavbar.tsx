@@ -7,31 +7,34 @@ import {
   faCommentDots,
   faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
+import { usePathname } from "next/navigation";
 
 function SideNavbar({
   setSidebarOpen,
 }: {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) {
+  const params = usePathname();
+
   const Navigation = [
     {
       name: "How Can We Help You",
-      link: "/#howcanwehelpyou",
+      link: "/",
       icon: faLayerGroup,
     },
     {
       name: "About Us",
-      link: "/#aboutus",
+      link: "/AboutUs",
       icon: faBuilding,
     },
     {
       name: "Client Testimony",
-      link: "/#clienttestimony",
+      link: "/ClientTestimony",
       icon: faCommentDots,
     },
     {
       name: "FAQs",
-      link: "/#faqs",
+      link: "/Faqs",
       icon: faCircleQuestion,
     },
   ];
@@ -43,7 +46,11 @@ function SideNavbar({
           Navigation.map((item, index) => {
             return (
               <Link key={index} href={item.link}>
-                <li className="transition-all py-5 pl-10 pr-28 hover:bg-gunmetal cursor-pointer flex">
+                <li
+                  className={`transition-all py-5 pl-10 pr-28 hover:bg-gunmetal cursor-pointer flex ${
+                    params == item.link ? "bg-gunmetal" : ""
+                  }`}
+                >
                   <FontAwesomeIcon icon={item.icon} className="h-6 w-6 mr-3" />
                   {item.name}
                 </li>
