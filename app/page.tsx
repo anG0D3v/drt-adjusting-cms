@@ -1,8 +1,8 @@
-import Dashboard from "@/components/Dashboard";
+import HowCanWeHelpYou from "@/components/HowCanWeHelpYou";
 export default function Home() {
   return (
-    <main>
-      <Dashboard />
+    <main className="w-full">
+      <HowCanWeHelpYou />
     </main>
   );
 }

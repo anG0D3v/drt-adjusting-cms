@@ -33,7 +33,12 @@ module.exports = {
         maroon: "#6B0B16",
         "light-gray": "#EAEAEA",
         "shady-white": "#FBFFFD",
+        "deep-black": "#111827",
         ...colors,
+      },
+      screens: {
+        xxs: "400px",
+        xs: "450px",
       },
     },
   },

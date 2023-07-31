@@ -32,14 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <link rel="icon" type="image/x-icon" href={`/img/companyFavicon.png`} />
-      <body className={`bg-[#F0F2F5] bg-cover bg-no-repeat ${inter.className}`}>
+      <body className={`bg-[#F1F1F1] bg-cover bg-no-repeat ${inter.className}`}>
         <Navigation setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
         <div className="pt-[95px] lg:pt-[135px] flex">
           <div
             className={`py-16 bg-dark-blue fixed h-screen transition-all ${
               sidebarOpen
                 ? "top-24 sm:top-32 left-0"
-                : "top-24 sm:top-32 -left-[320.75px]"
+                : "top-24 sm:top-32 -left-[356.75px]"
             }`}
           >
             <SideNavbar setSidebarOpen={setSidebarOpen} />
