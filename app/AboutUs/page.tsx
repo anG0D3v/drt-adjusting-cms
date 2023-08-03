@@ -20,7 +20,7 @@ function page() {
   ];
 
   return (
-    <div className="flex flex-col w-ful">
+    <div className="flex flex-col w-full">
       <div className="max-w-[1600px] my-10 sm:my-20 mx-auto px-6 md:px-20">
         <div>
           <h1 className="text-3xl font-bold text-deep-black mb-10">

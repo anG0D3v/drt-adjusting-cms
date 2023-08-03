@@ -1,10 +1,11 @@
 "use client";
 import "./globals.css";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navigation from "@/components/Navigation/Navigation";
 import SideNavbar from "@/components/Navigation/SideNavbar";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,29 +25,34 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  session,
 }: {
   children: React.ReactNode;
+  session: any;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <html lang="en">
       <link rel="icon" type="image/x-icon" href={`/img/companyFavicon.png`} />
-      <body className={`bg-[#F1F1F1] bg-cover bg-no-repeat ${inter.className}`}>
-        <Navigation setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
-        <div className="pt-[95px] lg:pt-[135px] flex">
-          <div
-            className={`py-16 bg-dark-blue fixed h-screen transition-all ${
-              sidebarOpen
-                ? "top-24 sm:top-32 left-0"
-                : "top-24 sm:top-32 -left-[356.75px]"
-            }`}
-          >
-            <SideNavbar setSidebarOpen={setSidebarOpen} />
+      <SessionProvider session={session}>
+        <body
+          className={`bg-[#F1F1F1] bg-cover bg-no-repeat relative ${inter.className}`}
+        >
+          <Navigation
+            setSidebarOpen={setSidebarOpen}
+            sidebarOpen={sidebarOpen}
+          />
+          <div className="pt-[95px] lg:pt-[135px] flex">
+            <SideNavbar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+
+            <div className="lg:ps-96">{children}</div>
           </div>
-          <div className="lg:ps-96">{children}</div>
-        </div>
-      </body>
+        </body>
+      </SessionProvider>
     </html>
   );
 }
