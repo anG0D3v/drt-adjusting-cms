@@ -6,7 +6,8 @@ import { Inter } from "next/font/google";
 import Navigation from "@/components/Navigation/Navigation";
 import SideNavbar from "@/components/Navigation/SideNavbar";
 import { SessionProvider } from "next-auth/react";
-
+import { AuthProvider } from "./Providers";
+import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -35,24 +36,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <link rel="icon" type="image/x-icon" href={`/img/companyFavicon.png`} />
-      <SessionProvider session={session}>
-        <body
-          className={`bg-[#F1F1F1] bg-cover bg-no-repeat relative ${inter.className}`}
-        >
-          <Navigation
-            setSidebarOpen={setSidebarOpen}
-            sidebarOpen={sidebarOpen}
-          />
-          <div className="pt-[95px] lg:pt-[135px] flex">
-            <SideNavbar
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
 
-            <div className="lg:ps-96">{children}</div>
+      <body
+        className={`bg-[#F1F1F1] bg-cover bg-no-repeat relative ${inter.className}`}
+      >
+        {/* <AuthProvider> */}
+        <Navigation setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
+        <div className="pt-[95px] lg:pt-[135px] flex justify-center sm:justify-start">
+          <SideNavbar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
+
+          <div className="lg:ps-96 overflow-auto">
+            {children}
+            <Toaster position="top-right" reverseOrder={true} />
           </div>
-        </body>
-      </SessionProvider>
+        </div>
+        {/* </AuthProvider> */}
+      </body>
     </html>
   );
 }

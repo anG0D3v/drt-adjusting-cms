@@ -1,47 +1,63 @@
-import NextAuth from "next-auth";
+import { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-const handler = NextAuth({
+
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" },
+        username: { label: "username", type: "text" },
+        password: { label: "password", type: "password" },
       },
-      async authorize(credentials, req) {
-        const { username, password } = credentials as any;
 
-        const res = await fetch("http://localhost:3000/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        });
-        const user = await res.json();
+      async authorize(credentials) {
+        console.log(credentials);
 
-        if (res.ok && user) {
-          return user;
-        } else {
-          return null;
-        }
+        return null;
+
+        // const { username, password } = credentials as any;
+        // const res = await fetch(process.env.DEV_API + `/api/user/login`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     username,
+        //     password,
+        //   }),
+        // });
+        // const user = await res.json();
+        // console.log(Object.keys(user).length !== 0);
+        // if (res.ok && user && user.username) {
+        //   return user;
+        // } else {
+        //   return null;
+        // }
       },
     }),
   ],
+  // callbacks: {
+  //   async signIn({ username, password }) {
+  //     const isAllowedToSignIn = true;
+  //     if (isAllowedToSignIn) {
+  //       return true;
+  //     } else {
+  //       // Return false to display a default error message
+  //       return false;
+  //       // Or you can return a URL to redirect to:
+  //       // return '/unauthorized'
+  //     }
+  //   },
+  // },
   session: {
     strategy: "jwt",
   },
   pages: {
     signIn: "/auth/login",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
