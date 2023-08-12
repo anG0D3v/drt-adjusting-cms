@@ -40,20 +40,23 @@ export default function RootLayout({
       <body
         className={`bg-[#F1F1F1] bg-cover bg-no-repeat relative ${inter.className}`}
       >
-        {/* <AuthProvider> */}
-        <Navigation setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
-        <div className="pt-[95px] lg:pt-[135px] flex justify-center sm:justify-start">
-          <SideNavbar
-            sidebarOpen={sidebarOpen}
+        <AuthProvider>
+          <Navigation
             setSidebarOpen={setSidebarOpen}
+            sidebarOpen={sidebarOpen}
           />
+          <div className="pt-[95px] lg:pt-[135px] flex justify-center sm:justify-start">
+            <SideNavbar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
 
-          <div className="lg:ps-96 overflow-auto">
-            {children}
-            <Toaster position="top-right" reverseOrder={true} />
+            <div className="lg:ps-96 overflow-auto">
+              {children}
+              <Toaster position="top-right" reverseOrder={true} />
+            </div>
           </div>
-        </div>
-        {/* </AuthProvider> */}
+        </AuthProvider>
       </body>
     </html>
   );

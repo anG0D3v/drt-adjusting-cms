@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { useSession, getSession } from "next-auth/react";
 
 type Services = {
   ServicesData: {
@@ -13,6 +14,12 @@ type Services = {
 };
 
 function HowCanWeHelpYouTable({ ServicesData }: Services) {
+  const { data: session } = useSession();
+
+  const sessionUser = session?.user;
+  console.log(sessionUser);
+  console.log(session);
+
   return (
     <Fragment>
       <div className="rounded-lg overflow-auto shadow-lg max-w-[300px] xxs:max-w-[380px] xs:max-w-[450px] sm:max-w-[900px] w-full">
