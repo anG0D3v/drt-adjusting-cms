@@ -127,7 +127,7 @@ export default function EditFaqs({
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
                       Edit Frequently Asked Questions :{" "}
-                      <span className="text-dark-blue">ID # {currentId}</span>
+                      <span className="text-dark-blue">Item # {currentId}</span>
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="">

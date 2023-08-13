@@ -3,11 +3,12 @@ import React, { useState, useEffect } from "react";
 import FaqsTable from "@/components/Faqs/FaqsTable";
 import Content from "@/components/Faqs/Content";
 import EditFaqs from "@/components/Faqs/EditFaqs";
-
+import DeleteFaqs from "@/components/Faqs/DeleteFaqs";
 function page() {
   const [faqsData, setFaqsData] = useState([]);
   const [dataUpdate, setDataUpdate] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
 
   useEffect(() => {
@@ -35,6 +36,7 @@ function page() {
           FaqsData={faqsData}
           setIsOpen={setIsEditModalOpen}
           setCurrentId={setCurrentId}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
         />
       </div>
 
@@ -44,6 +46,16 @@ function page() {
           isOpen={isEditModalOpen}
           setIsOpen={setIsEditModalOpen}
           currentId={currentId}
+          setDataUpdate={setDataUpdate}
+          dataUpdate={dataUpdate}
+        />
+      )}
+
+      {currentId !== 0 && (
+        <DeleteFaqs
+          currentId={currentId}
+          isOpen={isDeleteModalOpen}
+          setIsOpen={setIsDeleteModalOpen}
           setDataUpdate={setDataUpdate}
           dataUpdate={dataUpdate}
         />

@@ -20,10 +20,12 @@ function FaqsTable({
   FaqsData,
   setIsOpen,
   setCurrentId,
+  setIsDeleteModalOpen,
 }: {
   FaqsData: Faqs;
   setIsOpen: Dispatch<boolean>;
   setCurrentId: Dispatch<number>;
+  setIsDeleteModalOpen: Dispatch<boolean>;
 }) {
   return (
     <Fragment>
@@ -91,8 +93,8 @@ function FaqsTable({
                                 </button>
                                 <button
                                   onClick={() => {
-                                    // setIsOpen(true);
-                                    // setCurrentId(item.id as number);
+                                    setIsDeleteModalOpen(true);
+                                    setCurrentId(item.id as number);
                                   }}
                                   type="button"
                                   className="flex py-2 px-5 rounded-md text-shady-white bg-maroon/90 transition-all hover:scale-95"

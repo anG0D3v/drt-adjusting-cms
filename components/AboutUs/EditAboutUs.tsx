@@ -128,7 +128,7 @@ export default function EditAboutUs({
                       Edit About Us{" "}
                       <span className="text-dark-blue">
                         {" "}
-                        : ID # {currentId}
+                        : Item # {currentId}
                       </span>
                     </Dialog.Title>
                     <div className="mt-2">
