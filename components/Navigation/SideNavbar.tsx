@@ -19,10 +19,9 @@ function SideNavbar({
   sidebarOpen: boolean;
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const sessionUser = session?.user;
   console.log(sessionUser);
-  console.log(session);
 
   const params = usePathname();
 

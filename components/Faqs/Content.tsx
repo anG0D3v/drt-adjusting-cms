@@ -14,13 +14,7 @@ function Content({
 }) {
   const { data: session } = useSession();
   const sessionUser = session?.user;
-  console.log(sessionUser);
-  console.log(session);
-
-  console.log(sessionUser?.name);
-
   const { register, handleSubmit, reset } = useForm();
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -28,9 +22,9 @@ function Content({
     setIsLoading(true);
     try {
       await axios
-        .post(`${process.env.DEV_API}/api/about-us/add`, {
-          title: data.title,
-          content: data.content,
+        .post(`${process.env.DEV_API}/api/faqs/add`, {
+          question: data.question,
+          answer: data.answer,
           created_by: sessionUser?.name,
         })
         .then((res) => {
@@ -50,7 +44,6 @@ function Content({
       const axiosError = error as AxiosError<any>;
       console.log(axiosError);
 
-      setError(axiosError?.response?.data.message);
       setIsLoading(false);
       toast.error("Something Went Wrong!", { duration: 4000 });
     }
@@ -58,38 +51,38 @@ function Content({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-deep-black mb-6 sm:mb-10">
-        <span className="text-gunmetal">Create</span> About Us
+      <h1 className="text-3xl font-bold text-deep-black mb-10">
+        <span className="text-gunmetal">Create</span> Fequently Asked Questions
       </h1>
       <form onSubmit={onSubmit} className="">
         <div className="block sm:flex sm:space-x-10 space-y-8 sm:space-y-0 mb-8">
           <div className="space-y-2">
-            <label className="text-md font-medium" htmlFor="title">
-              Title
+            <label className="text-md font-medium" htmlFor="question">
+              Question
             </label>
             <input
-              id="title"
+              id="question"
               type="text"
-              {...register("title", { required: true })}
+              {...register("question", { required: true })}
               className="placeholder:italic placeholder:text-slate-400 block bg-white w-full sm:w-96 border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
               placeholder="Empowering Business Growth Through Innovation"
             />
           </div>
         </div>
         <div className="mb-10 space-y-2">
-          <label className="text-md font-medium" htmlFor="description">
-            Description
+          <label className="text-md font-medium" htmlFor="answer">
+            Answer
           </label>
           <textarea
-            id="description"
+            id="answer"
             rows={4}
             cols={50}
-            {...register("content", { required: true })}
+            {...register("answer", { required: true })}
             className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
             placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
           />
         </div>
-        <div className="flex justify-end mb-5">
+        <div className="flex justify-end mb-10">
           <button
             disabled={isLoading ? true : false}
             type="submit"

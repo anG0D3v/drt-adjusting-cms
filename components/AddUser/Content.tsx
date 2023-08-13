@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
+
 function page() {
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState("");

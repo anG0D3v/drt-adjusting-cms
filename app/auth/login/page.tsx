@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
+import Loading from "@/components/Loading";
 function page() {
   const { data: session, status } = useSession();
   console.log(status);
@@ -16,6 +16,13 @@ function page() {
   const [error, setError] = useState("");
   // console.log(process.env.DEV_API);
   const router = useRouter();
+
+  if (status === "loading") {
+    return <Loading />;
+  } else if (status == "authenticated") {
+    router.push("/");
+  }
+
   const onLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("clicked");
@@ -35,18 +42,12 @@ function page() {
       if (result.error) {
         // Handle error display
         // Example: Pass the error message to the AuthError component
-        setError("Username or Password is incorrect");
+        setError("Incorrect Credentials");
       } else {
         router.push("/");
       }
     }
   };
-
-  useEffect(() => {
-    if (status == "authenticated") {
-      router.push("/");
-    }
-  }, [status]);
 
   return (
     <div className="flex justify-center items-center lg:-ms-96 -mt-[95px] lg:-mt-[135px] h-screen w-screen px-6">

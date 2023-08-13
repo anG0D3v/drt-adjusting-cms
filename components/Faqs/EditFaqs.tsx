@@ -1,7 +1,7 @@
 import { Fragment, useState, Dispatch, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import { T_EditAboutUs } from "@/types/global.d";
+import { T_EditFaqs } from "@/types/global.d";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
@@ -10,23 +10,22 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
-type AboutUs = {
-  title: string;
-  content: string;
-  created_by: number;
-  status: boolean;
+type Faqs = {
   id: number;
+  question: string;
+  answer: string;
+  created_by: number;
 }[];
 
-export default function EditAboutUs({
-  AboutUsData,
+export default function EditFaqs({
+  FaqsData,
   isOpen,
   setIsOpen,
   currentId,
   setDataUpdate,
   dataUpdate,
 }: {
-  AboutUsData: AboutUs;
+  FaqsData: Faqs;
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
   currentId: number;
@@ -36,29 +35,29 @@ export default function EditAboutUs({
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
-  const newItem = AboutUsData.filter((item) => {
+  const newItem = FaqsData.filter((item) => {
     return item.id == currentId;
   });
-  const { register, handleSubmit, reset, setValue } = useForm<T_EditAboutUs>({
+  const { register, handleSubmit, reset, setValue } = useForm<T_EditFaqs>({
     defaultValues: {
-      title: newItem[0].title,
-      content: newItem[0].content,
+      question: newItem[0].question,
+      answer: newItem[0].answer,
       created_by: newItem[0].created_by,
     },
   });
 
   // to reset the defaultValues wheneven isOpen is triggered
   useEffect(() => {
-    reset({ title: newItem[0].title, content: newItem[0].content });
+    reset({ question: newItem[0].question, answer: newItem[0].answer });
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
     try {
       await axios
-        .patch(`${process.env.DEV_API}/api/about-us/update?id=${currentId}`, {
-          title: data.title,
-          content: data.content,
+        .put(`${process.env.DEV_API}/api/faqs/update?id=${currentId}`, {
+          question: data.question,
+          answer: data.answer,
           updated_by: sessionUser?.name,
         })
         .then((res) => {
@@ -75,6 +74,8 @@ export default function EditAboutUs({
       console.log(error);
 
       const axiosError = error as AxiosError<any>;
+      console.log(axiosError);
+
       toast.error("Something Went Wrong!", { duration: 4000 });
     }
     setIsOpen(false);
@@ -125,11 +126,8 @@ export default function EditAboutUs({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Edit About Us{" "}
-                      <span className="text-dark-blue">
-                        {" "}
-                        : ID # {currentId}
-                      </span>
+                      Edit Frequently Asked Questions :{" "}
+                      <span className="text-dark-blue">ID # {currentId}</span>
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="">
@@ -137,14 +135,14 @@ export default function EditAboutUs({
                           <div className="space-y-2">
                             <label
                               className="text-md font-medium"
-                              htmlFor="title"
+                              htmlFor="question"
                             >
-                              Title
+                              Question
                             </label>
                             <input
-                              id="title"
+                              id="question"
                               type="text"
-                              {...register("title", { required: true })}
+                              {...register("question", { required: true })}
                               className="placeholder:italic placeholder:text-slate-400 block bg-white w-full sm:w-96 border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
                               placeholder="Empowering Business Growth Through Innovation"
                             />
@@ -153,15 +151,15 @@ export default function EditAboutUs({
                         <div className="mb-10 space-y-2">
                           <label
                             className="text-md font-medium"
-                            htmlFor="description"
+                            htmlFor="answer"
                           >
-                            Description
+                            Answer
                           </label>
                           <textarea
-                            id="description"
+                            id="answer"
                             rows={10}
                             cols={50}
-                            {...register("content", { required: true })}
+                            {...register("answer", { required: true })}
                             className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
                             placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
                           />

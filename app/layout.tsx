@@ -8,6 +8,8 @@ import SideNavbar from "@/components/Navigation/SideNavbar";
 import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "./Providers";
 import { Toaster } from "react-hot-toast";
+import { useSession } from "next-auth/react";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

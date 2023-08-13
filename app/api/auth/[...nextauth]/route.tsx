@@ -1,7 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
+interface User {
+  name: string;
+  email: string;
+}
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -25,10 +28,24 @@ export const authOptions: NextAuthOptions = {
             password: password,
           }),
         });
-        const user = await res.json();
-        const userdetail = user.user.username;
-        if (res.ok && user.user.username == username) {
-          return user.user;
+        const userResponse = await res.json();
+
+        // const user = {
+        //   username: userResponse?.user.username,
+        //   email: userResponse?.user.email,
+        //   status: userResponse?.user.status,
+        // };
+
+        if (res.ok && userResponse.user.username == username) {
+          // const user: User = {
+          //   name: userResponse.user.username,
+          //   email: userResponse.user.email,
+          // };
+          return {
+            id: userResponse.user.id,
+            name: userResponse.user.id,
+            email: userResponse.user.username,
+          };
         } else {
           return null;
         }
@@ -41,6 +58,18 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/login",
   },
+  // callbacks: {
+  //   async jwt({ token, account, profile, user }) {
+  //     // Persist the OAuth access_token and or the user id to the token right after signin
+
+  //     if (account) {
+  //       token.accessToken = account.access_token;
+  //       token.id = user.id;
+  //       token.username = user.username;
+  //     }
+  //     return token;
+  //   },
+  // },
   secret: process.env.NEXTAUTH_SECRET,
 };
 

@@ -1,58 +1,131 @@
 import React from "react";
-import { Fragment } from "react";
+import { Fragment, Dispatch } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
-type Services = {
-  FaqsData: {
-    question: string;
-    answer: string;
-  }[];
-};
+import {
+  faXmarkCircle,
+  faPenToSquare,
+} from "@fortawesome/free-regular-svg-icons";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-function FaqsTable({ FaqsData }: Services) {
+type Faqs = {
+  id?: number;
+  question?: string;
+  answer?: string;
+  created_by?: string;
+}[];
+
+function FaqsTable({
+  FaqsData,
+  setIsOpen,
+  setCurrentId,
+}: {
+  FaqsData: Faqs;
+  setIsOpen: Dispatch<boolean>;
+  setCurrentId: Dispatch<number>;
+}) {
   return (
     <Fragment>
-      <div className="rounded-lg overflow-auto shadow-lg max-w-[300px] xxs:max-w-[380px] xs:max-w-[450px] sm:max-w-[900px] w-full">
-        <table className="table-auto border border-gray-100 w-full">
-          <thead className="bg-gray-300">
-            <tr className="divide-x-2">
-              <th className="p-5">Action</th>
-              <th className="p-5">Question</th>
-              <th className="p-5">Answer</th>
-            </tr>
-          </thead>
-          <tbody className="">
-            {FaqsData &&
-              FaqsData.map((item, index) => {
-                return (
-                  <tr key={index} className="bg-gray-50 even:bg-gray-200">
-                    <td className="py-5 px-5 w-[160px]">
-                      <div className="block">
-                        <button className="py-2 px-5 rounded-md mb-2 text-shady-white bg-gunmetal transition-all hover:scale-95">
-                          <FontAwesomeIcon
-                            icon={faPenToSquare}
-                            className="h-5 w-5 mr-1"
-                          />
-                          Edit
-                        </button>
-                        <button className="py-2 px-5 rounded-md text-shady-white bg-maroon/90 transition-all hover:scale-95">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="h-5 w-5 mr-1"
-                          />
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                    <td className="py-5 px-5">{item.question}</td>
-                    <td className="py-5 px-5">{item.answer}</td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+      <div className="max-w-[1000px] w-full overflow-hidden pb-10 px-4 sm:px-1">
+        <div className="mt-8 flow-root">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Action
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Id
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      >
+                        Question
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Answer
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Created By
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {FaqsData &&
+                      FaqsData.slice(0)
+                        .reverse()
+                        .map((item, index) => (
+                          <tr key={index}>
+                            <td className=" py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              <div className="block">
+                                <button
+                                  onClick={() => {
+                                    setIsOpen(true);
+                                    setCurrentId(item.id as number);
+                                  }}
+                                  type="button"
+                                  className="flex py-2 px-5 mb-2 rounded-md text-shady-white bg-gunmetal transition-all hover:scale-95"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPenToSquare}
+                                    className="h-5 w-5 mr-1"
+                                  />
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    // setIsOpen(true);
+                                    // setCurrentId(item.id as number);
+                                  }}
+                                  type="button"
+                                  className="flex py-2 px-5 rounded-md text-shady-white bg-maroon/90 transition-all hover:scale-95"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faXmarkCircle}
+                                    className="h-5 w-5 mr-1"
+                                  />
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                            <td className="px-3 py-4 text-sm text-gray-500">
+                              {item.id}
+                            </td>
+
+                            <td className="px-3 py-4 text-sm text-gray-500">
+                              {item.question}
+                            </td>
+                            <td className="px-3 py-4 text-sm text-gray-500">
+                              {item.answer}
+                            </td>
+                            <td className="px-3 py-4 text-sm text-gray-500">
+                              {item.created_by}
+                            </td>
+                          </tr>
+                        ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Fragment>
   );
