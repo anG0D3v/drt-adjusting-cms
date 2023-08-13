@@ -65,8 +65,8 @@ export default function WarningStatus({
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Please make the Active content Inactive first before
-                        making this content Active. Thank You!
+                        Please disable first the active content before enabling
+                        this content. Thank You!
                       </p>
                     </div>
                   </div>

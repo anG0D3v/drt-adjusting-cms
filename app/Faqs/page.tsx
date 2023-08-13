@@ -53,6 +53,7 @@ function page() {
 
       {currentId !== 0 && (
         <DeleteFaqs
+          FaqsData={faqsData}
           currentId={currentId}
           isOpen={isDeleteModalOpen}
           setIsOpen={setIsDeleteModalOpen}

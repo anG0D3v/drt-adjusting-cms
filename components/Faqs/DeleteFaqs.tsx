@@ -5,19 +5,35 @@ import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 
+type Faqs = {
+  id: number;
+  question: string;
+  answer: string;
+  created_by: number;
+  status: boolean;
+}[];
+
 function DeleteFaqs({
+  FaqsData,
   currentId,
   isOpen,
   setIsOpen,
   setDataUpdate,
   dataUpdate,
 }: {
+  FaqsData: Faqs;
   currentId: number;
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
   dataUpdate: boolean;
   setDataUpdate: Dispatch<boolean>;
 }) {
+  const newItem = FaqsData.filter((item) => {
+    return item.id == currentId;
+  });
+
+  console.log(newItem);
+
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
@@ -26,7 +42,9 @@ function DeleteFaqs({
   const onSubmit = async () => {
     try {
       await axios
-        .delete(`${process.env.DEV_API}/api/faqs/delete/${currentId}`)
+        .delete(`${process.env.DEV_API}/api/faqs/delete/${currentId}`, {
+          data: { updated_by: sessionUser?.name },
+        })
         .then((res) => {
           console.log(res);
 
@@ -90,11 +108,12 @@ function DeleteFaqs({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Delete Content
+                      {newItem[0].status ? "Disable Content" : "Enable Content"}
                     </Dialog.Title>
                     <div className="mt-3 mb-5">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to delete{" "}
+                        Are you sure you want to{" "}
+                        {newItem[0].status ? "disable" : "enable"}{" "}
                         <span className="font-bold">
                           Item Number : {currentId}
                         </span>{" "}
@@ -111,7 +130,7 @@ function DeleteFaqs({
                       onSubmit();
                     }}
                   >
-                    Delete Content
+                    {newItem[0].status ? "Disable" : "Enable"}
                   </button>
                   <button
                     type="button"

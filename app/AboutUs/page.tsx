@@ -15,8 +15,6 @@ function page() {
   const [checkIfSomeActiveStatus, setCheckIfSomeActiveStatus] = useState(false);
   const [openWarningModal, setOpenWarningModal] = useState(false);
 
-  console.log(currentId);
-
   useEffect(() => {
     const fetchItem = async () => {
       try {

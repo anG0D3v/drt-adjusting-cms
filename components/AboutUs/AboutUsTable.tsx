@@ -9,13 +9,14 @@ import {
   faPenToSquare,
 } from "@fortawesome/free-regular-svg-icons";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-
+import Pagination from "../Pagination";
 type AboutUs = {
   title?: string;
   content?: string;
   created_by?: number;
   status?: boolean;
   id?: number;
+  ModifiedByUser?: { id: number } | null;
 }[];
 
 function AboutUsTable({
@@ -35,18 +36,50 @@ function AboutUsTable({
 }) {
   console.log(AboutUsData);
   const [searchItem, setSearchItem] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(10);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+
+  // Current Viewed Data
+  const currentPost = AboutUsData.slice(indexOfFirstPost, indexOfLastPost);
 
   const thereIsActiveData = AboutUsData.some((item) => {
     return item.status === true;
   });
 
+  // const filteredData =
+  //   AboutUsData &&
+  //   AboutUsData.filter((item) => {
+  //     const status = item.status ? "disable" : "enable";
+
+  //     return (
+  //       item.title?.toLowerCase().includes(searchItem.toLowerCase()) ||
+  //       item.content?.toLowerCase().includes(searchItem.toLowerCase()) ||
+  //       status.toLowerCase().includes(searchItem.toLowerCase())
+  //     );
+  //   });
+
+  // Choose between search item or pagination
   const filteredData =
-    AboutUsData &&
-    AboutUsData.filter(
-      (item) =>
-        item.title?.toLowerCase().includes(searchItem.toLowerCase()) ||
-        item.content?.toLowerCase().includes(searchItem.toLowerCase())
-    );
+    searchItem === ""
+      ? currentPost.filter((item) => {
+          const status = item.status ? "disable" : "enable";
+          return (
+            item.title?.toLowerCase().includes(searchItem.toLowerCase()) ||
+            item.content?.toLowerCase().includes(searchItem.toLowerCase()) ||
+            status.toLowerCase().includes(searchItem.toLowerCase())
+          );
+        })
+      : AboutUsData.filter((item) => {
+          const status = item.status ? "disable" : "enable";
+          return (
+            item.title?.toLowerCase().includes(searchItem.toLowerCase()) ||
+            item.content?.toLowerCase().includes(searchItem.toLowerCase()) ||
+            status.toLowerCase().includes(searchItem.toLowerCase())
+          );
+        });
 
   return (
     <Fragment>
@@ -66,6 +99,12 @@ function AboutUsTable({
           />
         </div>
       </div>
+      <Pagination
+        postPerPage={postsPerPage}
+        totalPosts={AboutUsData.length}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
       <div className="max-w-[1000px] w-full overflow-hidden pb-10 px-4 sm:px-1">
         <div className="mt-8 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -104,6 +143,12 @@ function AboutUsTable({
                       >
                         Created By
                       </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Modified By
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
@@ -129,7 +174,7 @@ function AboutUsTable({
                                 }}
                                 type="button"
                                 className={`${
-                                  item.status ? "bg-blue-500" : "bg-maroon/90"
+                                  item.status ? "bg-maroon/90" : "bg-blue-500"
                                 } flex py-2 px-5 mb-2 rounded-md text-shady-white transition-all hover:scale-95`}
                               >
                                 <FontAwesomeIcon
@@ -138,7 +183,7 @@ function AboutUsTable({
                                   }
                                   className="h-5 w-5 mr-1"
                                 />
-                                {item.status ? "Active" : "Inactive"}
+                                {item.status ? "Disable" : "Enable"}
                               </button>
                               <button
                                 onClick={() => {
@@ -168,6 +213,11 @@ function AboutUsTable({
                           </td>
                           <td className="px-3 py-4 text-sm text-gray-500">
                             {item.created_by}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500">
+                            {item.ModifiedByUser?.id !== null
+                              ? item.ModifiedByUser?.id
+                              : ""}
                           </td>
                         </tr>
                       ))}

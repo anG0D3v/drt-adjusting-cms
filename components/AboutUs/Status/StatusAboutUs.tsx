@@ -104,9 +104,7 @@ export default function StatusAboutUs({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      {newItem[0].status
-                        ? "Inactivate Content"
-                        : "Activate Content"}
+                      {newItem[0].status ? "Disable Content" : "Enable Content"}
                     </Dialog.Title>
                     <div className="mt-3 mb-5">
                       <p className="text-sm text-gray-500">
@@ -114,7 +112,7 @@ export default function StatusAboutUs({
                         <span className="font-bold">
                           {" "}
                           Item Number: {currentId}{" "}
-                          {newItem[0].status ? "Inactivate" : "Activate"}
+                          {newItem[0].status ? "Disabled" : "Enabled"}
                         </span>{" "}
                         ?
                       </p>
@@ -129,9 +127,7 @@ export default function StatusAboutUs({
                       onSubmit();
                     }}
                   >
-                    {newItem[0].status
-                      ? "Inactivate Content"
-                      : "Activate Content"}
+                    {newItem[0].status ? "Disable Content" : "Enable Content"}
                   </button>
                   <button
                     type="button"
