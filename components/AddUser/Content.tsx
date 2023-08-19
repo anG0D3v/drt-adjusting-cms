@@ -10,9 +10,8 @@ function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    setIsLoading(true);
     const toastId = toast.loading("Loading...");
+    setIsLoading(true);
 
     try {
       const response: any = await axios
@@ -27,8 +26,8 @@ function Page() {
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Added a User", { duration: 4000 });
             toast.dismiss(toastId);
-            setIsLoading(false);
             reset();
+            setIsLoading(false);
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
             toast.dismiss(toastId);
@@ -37,10 +36,12 @@ function Page() {
         });
     } catch (error) {
       const axiosError = error as AxiosError<any>;
+      console.log(axiosError);
+
       setError(axiosError?.response?.data.message);
-      setIsLoading(false);
       toast.error("Something Went Wrong!", { duration: 4000 });
       toast.dismiss(toastId);
+      setIsLoading(false);
     }
   });
 
@@ -96,7 +97,7 @@ function Page() {
               type="submit"
               className="py-2 px-5 rounded-md mb-2 text-shady-white bg-steel-blue transition-all hover:scale-95"
             >
-              Submit
+              {isLoading ? "Submitting" : "Submit"}
             </button>
           </div>
         </form>

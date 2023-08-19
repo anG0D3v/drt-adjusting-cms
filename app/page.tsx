@@ -20,7 +20,6 @@ function Page() {
         ).then((res) => {
           return res.json();
         });
-        console.log(response);
 
         setHowCanWeHelpYouData(response.data);
       } catch (error) {

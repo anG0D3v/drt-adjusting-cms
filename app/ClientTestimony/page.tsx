@@ -11,7 +11,6 @@ function Page() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  console.log(clientTestimonyData);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -19,11 +18,9 @@ function Page() {
         const response = await fetch(
           `${process.env.DEV_API}/api/testimonies/all`
         ).then((res) => {
-          console.log(res);
 
           return res.json();
         });
-        console.log(response);
 
         setClientTestimonyData(response.data);
       } catch (error) {

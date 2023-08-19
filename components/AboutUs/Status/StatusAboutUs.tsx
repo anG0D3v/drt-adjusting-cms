@@ -34,11 +34,14 @@ export default function StatusAboutUs({
   const { data: session } = useSession();
   const sessionUser = session?.user;
   const cancelButtonRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
   const newItem = AboutUsData.filter((item) => {
     return item.id == currentId;
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
+    const toastId = toast.loading("Loading...");
     try {
       await axios
         .put(`${process.env.DEV_API}/api/about-us/toggle?id=${currentId}`, {
@@ -54,16 +57,20 @@ export default function StatusAboutUs({
               } a Content`,
               { duration: 4000 }
             );
+            toast.dismiss(toastId);
             setDataUpdate(!dataUpdate);
+            setIsLoading(false);
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
+            toast.dismiss(toastId);
+            setIsLoading(false);
           }
         });
     } catch (error) {
-      console.log(error);
-
       const axiosError = error as AxiosError<any>;
       toast.error("Something Went Wrong!", { duration: 4000 });
+      toast.dismiss(toastId);
+      setIsLoading(false);
     }
     setIsOpen(false);
   };
@@ -129,6 +136,7 @@ export default function StatusAboutUs({
                 </div>
                 <div className="mt-5 flex flex-row-reverse">
                   <button
+                    disabled={isLoading ? true : false}
                     type="button"
                     className="py-2 px-5 rounded-md ml-3 text-shady-white bg-steel-blue transition-all hover:scale-95"
                     onClick={() => {

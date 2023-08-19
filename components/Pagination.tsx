@@ -20,16 +20,10 @@ export default function Pagination({
   const howManyPages = totalPosts / postPerPage;
   const roundHowManyPages = parseInt(howManyPages.toFixed());
 
-  // const firstNumber = (currentPage - 1) * postPerPage + 1;
-  // const lastNumber = currentPage * postPerPage;
-  // console.log("firstNumber", firstNumber);
-  // console.log("lastNumber", lastNumber);
   const firstNumber = (currentPage - 1) * postPerPage + 1;
   const lastNumberCal = firstNumber - 1;
   const lastNumber = Math.min(lastNumberCal + postPerPage, totalPosts);
-  console.log("firstNumber", firstNumber);
-  console.log("lastNumber", lastNumber);
-  // const item1 = item= (1 - 1) * 2 + 1 = 1
+ 
   return (
     <nav
       className="flex items-center justify-between border-t border-gray-200 pt-3"

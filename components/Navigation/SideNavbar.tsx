@@ -21,7 +21,6 @@ function SideNavbar({
 }) {
   const { data: session, status } = useSession();
   const sessionUser = session?.user;
-  console.log(sessionUser);
 
   const params = usePathname();
 

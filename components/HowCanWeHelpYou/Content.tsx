@@ -14,17 +14,12 @@ function Content({
 }) {
   const { data: session } = useSession();
   const sessionUser = session?.user;
-  console.log(sessionUser);
-  console.log(session);
-
-  console.log(sessionUser?.name);
 
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     setIsLoading(true);
     const toastId = toast.loading("Loading...");
 
@@ -36,34 +31,29 @@ function Content({
         formData.append("file", data?.image[0]);
       }
       formData.append("created_by", sessionUser?.name as string);
-      console.log(formData);
 
       await axios
         .post(`${process.env.DEV_API}/api/services/add`, formData)
         .then((res) => {
-          console.log(res);
-
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Added a Content", { duration: 4000 });
             toast.dismiss(toastId);
-            setIsLoading(false);
             setDataUpdate(!dataUpdate);
+            setIsLoading(false);
             reset();
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
             toast.dismiss(toastId);
-
             setIsLoading(false);
           }
         });
     } catch (error) {
       const axiosError = error as AxiosError<any>;
-      console.log(axiosError);
 
       setError(axiosError?.response?.data.message);
-      setIsLoading(false);
       toast.error("Something Went Wrong!", { duration: 4000 });
       toast.dismiss(toastId);
+      setIsLoading(false);
     }
   });
 
@@ -119,7 +109,7 @@ function Content({
             type="submit"
             className="py-2 px-5 rounded-md mb-2 text-shady-white bg-steel-blue transition-all hover:scale-95"
           >
-            Submit
+            {isLoading ? "Submitting" : "Submit"}
           </button>
         </div>
       </form>

@@ -33,7 +33,6 @@ function ClientTestimonyTable({
   setCurrentId: Dispatch<number>;
   setIsDeleteModalOpen: Dispatch<boolean>;
 }) {
-  console.log(ClientTestimonyData);
   const [searchItem, setSearchItem] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(10);

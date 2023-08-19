@@ -7,14 +7,12 @@ import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
 function Page() {
   const { data: session, status } = useSession();
-  console.log(status);
 
   const [userCredentials, setUserCredentials] = useState({
     username: "",
     password: "",
   });
   const [error, setError] = useState("");
-  // console.log(process.env.DEV_API);
   const router = useRouter();
 
   if (status === "loading") {
@@ -25,11 +23,8 @@ function Page() {
 
   const onLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("clicked");
-    // console.log(userCredentials);
 
     if (userCredentials.username == "" && userCredentials.password == "") {
-      console.log("username is required");
       setError("Username and Password is required");
     } else {
       const result: any = await signIn("credentials", {

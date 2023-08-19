@@ -36,9 +36,12 @@ export default function EditAboutUs({
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const newItem = AboutUsData.filter((item) => {
     return item.id == currentId;
   });
+
   const { register, handleSubmit, reset, setValue } = useForm<T_EditAboutUs>({
     defaultValues: {
       title: newItem[0].title,
@@ -53,7 +56,8 @@ export default function EditAboutUs({
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
+    const toastId = toast.loading("Loading...");
+    setIsLoading(true);
     try {
       await axios
         .patch(`${process.env.DEV_API}/api/about-us/update?id=${currentId}`, {
@@ -62,20 +66,23 @@ export default function EditAboutUs({
           updated_by: sessionUser?.name,
         })
         .then((res) => {
-          console.log(res);
-
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Updated a Content", { duration: 4000 });
             setDataUpdate(!dataUpdate);
+            toast.dismiss(toastId);
+            setIsLoading(false);
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
+            toast.dismiss(toastId);
+            setIsLoading(false);
           }
         });
     } catch (error) {
       console.log(error);
-
       const axiosError = error as AxiosError<any>;
       toast.error("Something Went Wrong!", { duration: 4000 });
+      toast.dismiss(toastId);
+      setIsLoading(false);
     }
     setIsOpen(false);
   });
@@ -172,13 +179,14 @@ export default function EditAboutUs({
                 </div>
                 <div className="mt-5 flex flex-row-reverse">
                   <button
+                    disabled={isLoading ? true : false}
                     type="button"
                     className="py-2 px-5 rounded-md ml-3 text-shady-white bg-steel-blue transition-all hover:scale-95"
                     onClick={() => {
                       onSubmit();
                     }}
                   >
-                    Submit
+                    {isLoading ? "Submitting" : "Submit"}
                   </button>
                   <button
                     type="button"

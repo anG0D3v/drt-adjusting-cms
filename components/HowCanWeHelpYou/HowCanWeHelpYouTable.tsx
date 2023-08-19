@@ -31,7 +31,6 @@ function HowCanWeHelpYouTable({
   setCurrentId: Dispatch<number>;
   setIsDeleteModalOpen: Dispatch<boolean>;
 }) {
-  console.log(HowCanWeHelpYouData);
   const [searchItem, setSearchItem] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(10);

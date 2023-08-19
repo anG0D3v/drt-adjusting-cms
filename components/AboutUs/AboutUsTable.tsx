@@ -35,7 +35,6 @@ function AboutUsTable({
   setCheckIfSomeActiveStatus: Dispatch<boolean>;
   setOpenWarningModal: Dispatch<boolean>;
 }) {
-  console.log(AboutUsData);
   const [searchItem, setSearchItem] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(10);

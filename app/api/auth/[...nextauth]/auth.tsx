@@ -11,7 +11,6 @@ const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        console.log(credentials);
 
         const { username, password } = credentials as any;
         const res = await fetch(`${process.env.DEV_API}/api/user/login`, {

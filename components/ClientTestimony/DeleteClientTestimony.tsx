@@ -28,19 +28,21 @@ function DeleteHCWHY({
   dataUpdate: boolean;
   setDataUpdate: Dispatch<boolean>;
 }) {
+  const { data: session } = useSession();
+  const sessionUser = session?.user;
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const newItem = ClientTestimonyData.filter((item) => {
     return item.id == currentId;
   });
-
-  console.log(newItem);
-
-  const { data: session } = useSession();
-  const sessionUser = session?.user;
 
   const cancelButtonRef = useRef(null);
 
   const onSubmit = async () => {
     const toastId = toast.loading("Loading...");
+    setIsLoading(true);
+
     try {
       await axios
         .delete(
@@ -50,7 +52,6 @@ function DeleteHCWHY({
           }
         )
         .then((res) => {
-          console.log(res);
           if (res.status >= 200 && res.status <= 300) {
             toast.success(
               `Successfully ${
@@ -58,19 +59,20 @@ function DeleteHCWHY({
               } a Content`,
               { duration: 4000 }
             );
-            toast.dismiss(toastId);
             setDataUpdate(!dataUpdate);
+            toast.dismiss(toastId);
+            setIsLoading(false);
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
             toast.dismiss(toastId);
+            setIsLoading(false);
           }
         });
     } catch (error) {
-      console.log(error);
-
       const axiosError = error as AxiosError<any>;
       toast.error("Something Went Wrong!", { duration: 4000 });
       toast.dismiss(toastId);
+      setIsLoading(false);
     }
     setIsOpen(false);
   };
@@ -135,6 +137,7 @@ function DeleteHCWHY({
                 </div>
                 <div className="mt-5 flex flex-row-reverse">
                   <button
+                    disabled={isLoading ? true : false}
                     type="button"
                     className="py-2 px-5 rounded-md ml-3 text-shady-white bg-steel-blue transition-all hover:scale-95"
                     onClick={() => {
