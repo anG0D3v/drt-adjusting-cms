@@ -39,7 +39,7 @@ function Navigation({
   return (
     <>
       {sessionUser && (
-        <div className="fixed w-full z-50">
+        <div className="fixed w-full z-10">
           <div className="bg-midnight-blue e px-6 py-2 hidden sm:block">
             <div className="max-w-[1700px] mx-auto flex">
               <div className="flex-1">
@@ -83,7 +83,7 @@ function Navigation({
                     <div className="flex items-center">
                       <div className="block mr-3">
                         <p className="text-tangerine mb-0.5">
-                          The Administrator
+                          {sessionUser?.email}
                         </p>
                         <CurrentDateNoSSR />
                       </div>

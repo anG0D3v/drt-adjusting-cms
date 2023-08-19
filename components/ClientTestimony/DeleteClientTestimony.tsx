@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 
-type Faqs = {
+type ClientTestimonyData = {
   id: number;
   question: string;
   answer: string;
@@ -13,22 +13,22 @@ type Faqs = {
   status: boolean;
 }[];
 
-function DeleteFaqs({
-  FaqsData,
+function DeleteHCWHY({
+  ClientTestimonyData,
   currentId,
   isOpen,
   setIsOpen,
   setDataUpdate,
   dataUpdate,
 }: {
-  FaqsData: Faqs;
+  ClientTestimonyData: ClientTestimonyData;
   currentId: number;
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
   dataUpdate: boolean;
   setDataUpdate: Dispatch<boolean>;
 }) {
-  const newItem = FaqsData.filter((item) => {
+  const newItem = ClientTestimonyData.filter((item) => {
     return item.id == currentId;
   });
 
@@ -43,12 +43,14 @@ function DeleteFaqs({
     const toastId = toast.loading("Loading...");
     try {
       await axios
-        .delete(`${process.env.DEV_API}/api/faqs/delete/${currentId}`, {
-          data: { updated_by: sessionUser?.name },
-        })
+        .delete(
+          `${process.env.DEV_API}/api/testimonies/delete?id=${currentId}`,
+          {
+            data: { updated_by: sessionUser?.name },
+          }
+        )
         .then((res) => {
           console.log(res);
-
           if (res.status >= 200 && res.status <= 300) {
             toast.success(
               `Successfully ${
@@ -159,4 +161,4 @@ function DeleteFaqs({
   );
 }
 
-export default DeleteFaqs;
+export default DeleteHCWHY;

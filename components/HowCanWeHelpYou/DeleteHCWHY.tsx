@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 
-type Faqs = {
+type HowCanWeHelpYouData = {
   id: number;
   question: string;
   answer: string;
@@ -13,22 +13,22 @@ type Faqs = {
   status: boolean;
 }[];
 
-function DeleteFaqs({
-  FaqsData,
+function DeleteHCWHY({
+  HowCanWeHelpYouData,
   currentId,
   isOpen,
   setIsOpen,
   setDataUpdate,
   dataUpdate,
 }: {
-  FaqsData: Faqs;
+  HowCanWeHelpYouData: HowCanWeHelpYouData;
   currentId: number;
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
   dataUpdate: boolean;
   setDataUpdate: Dispatch<boolean>;
 }) {
-  const newItem = FaqsData.filter((item) => {
+  const newItem = HowCanWeHelpYouData.filter((item) => {
     return item.id == currentId;
   });
 
@@ -43,7 +43,7 @@ function DeleteFaqs({
     const toastId = toast.loading("Loading...");
     try {
       await axios
-        .delete(`${process.env.DEV_API}/api/faqs/delete/${currentId}`, {
+        .delete(`${process.env.DEV_API}/api/services/delete?id=${currentId}`, {
           data: { updated_by: sessionUser?.name },
         })
         .then((res) => {
@@ -159,4 +159,4 @@ function DeleteFaqs({
   );
 }
 
-export default DeleteFaqs;
+export default DeleteHCWHY;

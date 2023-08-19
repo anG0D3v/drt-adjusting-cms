@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 
-function page() {
+function Page() {
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -12,6 +12,8 @@ function page() {
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
     setIsLoading(true);
+    const toastId = toast.loading("Loading...");
+
     try {
       const response: any = await axios
         .post(`${process.env.DEV_API}/api/user/add`, {
@@ -24,10 +26,12 @@ function page() {
 
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Added a User", { duration: 4000 });
+            toast.dismiss(toastId);
             setIsLoading(false);
             reset();
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
+            toast.dismiss(toastId);
             setIsLoading(false);
           }
         });
@@ -36,6 +40,7 @@ function page() {
       setError(axiosError?.response?.data.message);
       setIsLoading(false);
       toast.error("Something Went Wrong!", { duration: 4000 });
+      toast.dismiss(toastId);
     }
   });
 
@@ -100,4 +105,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -20,8 +20,9 @@ function Content({
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
     setIsLoading(true);
+    const toastId = toast.loading("Loading...");
     try {
-      await axios
+      const request = await axios
         .post(`${process.env.DEV_API}/api/faqs/add`, {
           question: data.question,
           answer: data.answer,
@@ -32,11 +33,13 @@ function Content({
 
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Added a Content", { duration: 4000 });
+            toast.dismiss(toastId);
             setIsLoading(false);
             setDataUpdate(!dataUpdate);
             reset();
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
+            toast.dismiss(toastId);
             setIsLoading(false);
           }
         });
@@ -46,6 +49,7 @@ function Content({
 
       setIsLoading(false);
       toast.error("Something Went Wrong!", { duration: 4000 });
+      toast.dismiss(toastId);
     }
   });
 

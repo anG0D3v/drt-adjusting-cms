@@ -11,12 +11,13 @@ import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Pagination from "../Pagination";
 
 type Faqs = {
-  id?: number;
+  id: number;
   question?: string;
   answer?: string;
   created_by?: string;
   status?: boolean;
-  ModifiedByUser?: { id: number } | null;
+  CreatedByUser?: { username: string } | null;
+  ModifiedByUser?: { username: string } | null;
 }[];
 
 function FaqsTable({
@@ -38,8 +39,10 @@ function FaqsTable({
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
   // Current Viewed Data
-  const currentPost = FaqsData.slice(indexOfFirstPost, indexOfLastPost);
-  // const filteredData =
+  const currentPost = FaqsData.sort((a, b) => b.id - a.id).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  ); // const filteredData =
   //   FaqsData &&
   //   FaqsData.filter((item) => {
   //     const status = item.status ? "disable" : "enable";
@@ -72,7 +75,7 @@ function FaqsTable({
 
   return (
     <Fragment>
-      <div className="relative rounded-md shadow-sm">
+      <div className="relative rounded-md shadow-sm mb-5">
         <input
           onChange={(e) => {
             setSearchItem(e.target.value);
@@ -104,18 +107,6 @@ function FaqsTable({
                     <tr>
                       <th
                         scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Action
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Id
-                      </th>
-                      <th
-                        scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                       >
                         Question
@@ -138,69 +129,70 @@ function FaqsTable({
                       >
                         Modified By
                       </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {filteredData &&
-                      filteredData
-                        .slice(0)
-                        .reverse()
-                        .map((item, index) => (
-                          <tr key={index}>
-                            <td className=" py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              <div className="block">
-                                <button
-                                  onClick={() => {
-                                    setIsOpen(true);
-                                    setCurrentId(item.id as number);
-                                  }}
-                                  type="button"
-                                  className="flex py-2 px-5 mb-2 rounded-md text-shady-white bg-gunmetal transition-all hover:scale-95"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className="h-5 w-5 mr-1"
-                                  />
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setIsDeleteModalOpen(true);
-                                    setCurrentId(item.id as number);
-                                  }}
-                                  type="button"
-                                  className={`${
-                                    item.status ? "bg-maroon/90" : "bg-blue-500"
-                                  } flex py-2 px-5 mb-2 rounded-md text-shady-white transition-all hover:scale-95`}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faXmarkCircle}
-                                    className="h-5 w-5 mr-1"
-                                  />
-                                  {item.status ? "Disable" : "Enable"}
-                                </button>
-                              </div>
-                            </td>
-                            <td className="px-3 py-4 text-sm text-gray-500">
-                              {item.id}
-                            </td>
-
-                            <td className="px-3 py-4 text-sm text-gray-500">
-                              {item.question}
-                            </td>
-                            <td className="px-3 py-4 text-sm text-gray-500">
-                              {item.answer}
-                            </td>
-                            <td className="px-3 py-4 text-sm text-gray-500">
-                              {item.created_by}
-                            </td>
-                            <td className="px-3 py-4 text-sm text-gray-500">
-                              {item.ModifiedByUser?.id !== null
-                                ? item.ModifiedByUser?.id
-                                : ""}
-                            </td>
-                          </tr>
-                        ))}
+                      filteredData.map((item, index) => (
+                        <tr key={index}>
+                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            {item.question}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500">
+                            {item.answer}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500">
+                            {item.CreatedByUser?.username !== null
+                              ? item.CreatedByUser?.username
+                              : ""}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500">
+                            {item.ModifiedByUser?.username !== null
+                              ? item.ModifiedByUser?.username
+                              : ""}
+                          </td>
+                          <td className=" py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            <div className="block">
+                              <button
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  setCurrentId(item.id as number);
+                                }}
+                                type="button"
+                                className="flex py-2 px-5 mb-2 rounded-md text-shady-white bg-gunmetal transition-all hover:scale-95"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPenToSquare}
+                                  className="h-5 w-5 mr-1"
+                                />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setIsDeleteModalOpen(true);
+                                  setCurrentId(item.id as number);
+                                }}
+                                type="button"
+                                className={`${
+                                  item.status ? "bg-maroon/90" : "bg-blue-500"
+                                } flex py-2 px-5 mb-2 rounded-md text-shady-white transition-all hover:scale-95`}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faXmarkCircle}
+                                  className="h-5 w-5 mr-1"
+                                />
+                                {item.status ? "Disable" : "Enable"}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

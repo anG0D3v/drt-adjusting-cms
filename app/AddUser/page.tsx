@@ -1,6 +1,6 @@
 import React from "react";
 import Content from "@/components/AddUser/Content";
-function page() {
+function Page() {
   return (
     <>
       <Content />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

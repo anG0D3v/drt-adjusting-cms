@@ -6,7 +6,7 @@ import EditAboutUs from "@/components/AboutUs/EditAboutUs";
 import StatusAboutUs from "@/components/AboutUs/Status/StatusAboutUs";
 import WarningStatus from "@/components/AboutUs/Status/WarningStatus";
 
-function page() {
+function Page() {
   const [aboutUsData, setAboutUsData] = useState([]);
   const [dataUpdate, setDataUpdate] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -75,4 +75,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

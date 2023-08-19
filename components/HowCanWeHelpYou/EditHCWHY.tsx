@@ -1,7 +1,6 @@
 import { Fragment, useState, Dispatch, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import { T_EditFaqs } from "@/types/global.d";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
@@ -10,22 +9,22 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
-type Faqs = {
-  id: number;
-  question: string;
-  answer: string;
+type HowCanWeHelpYou = {
+  title: string;
+  description: string;
   created_by: number;
+  id: number;
 }[];
 
-export default function EditFaqs({
-  FaqsData,
+export default function EditHCWHY({
+  HowCanWeHelpYouData,
   isOpen,
   setIsOpen,
   currentId,
   setDataUpdate,
   dataUpdate,
 }: {
-  FaqsData: Faqs;
+  HowCanWeHelpYouData: HowCanWeHelpYou;
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
   currentId: number;
@@ -35,32 +34,40 @@ export default function EditFaqs({
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
-  const newItem = FaqsData.filter((item) => {
+  const newItem = HowCanWeHelpYouData.filter((item) => {
     return item.id == currentId;
   });
-  const { register, handleSubmit, reset, setValue } = useForm<T_EditFaqs>({
+  const { register, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
-      question: newItem[0].question,
-      answer: newItem[0].answer,
+      title: newItem[0].title,
+      description: newItem[0].description,
       created_by: newItem[0].created_by,
+      image: "",
     },
   });
 
   // to reset the defaultValues wheneven isOpen is triggered
   useEffect(() => {
-    reset({ question: newItem[0].question, answer: newItem[0].answer });
+    reset({ title: newItem[0].title, description: newItem[0].description });
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
     const toastId = toast.loading("Loading...");
     try {
+      var formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      if (data.image[0] !== undefined && data.image[0] !== null) {
+        formData.append("file", data?.image[0]);
+      }
+      formData.append("updated_by", sessionUser?.name as string);
+
       await axios
-        .put(`${process.env.DEV_API}/api/faqs/update?id=${currentId}`, {
-          question: data.question,
-          answer: data.answer,
-          updated_by: sessionUser?.name,
-        })
+        .put(
+          `${process.env.DEV_API}/api/services/update?id=${currentId}`,
+          formData
+        )
         .then((res) => {
           console.log(res);
 
@@ -77,8 +84,6 @@ export default function EditFaqs({
       console.log(error);
 
       const axiosError = error as AxiosError<any>;
-      console.log(axiosError);
-
       toast.error("Something Went Wrong!", { duration: 4000 });
       toast.dismiss(toastId);
     }
@@ -130,8 +135,11 @@ export default function EditFaqs({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Edit Frequently Asked Question :{" "}
-                      <span className="text-dark-blue">Item # {currentId}</span>
+                      Edit Service{" "}
+                      <span className="text-dark-blue">
+                        {" "}
+                        : Item # {currentId}
+                      </span>
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="">
@@ -139,34 +147,50 @@ export default function EditFaqs({
                           <div className="space-y-2">
                             <label
                               className="text-md font-medium"
-                              htmlFor="question"
+                              htmlFor="title"
                             >
-                              Question
+                              Title
                             </label>
                             <input
-                              id="question"
+                              id="title"
                               type="text"
-                              {...register("question", { required: true })}
+                              {...register("title", { required: true })}
                               className="placeholder:italic placeholder:text-slate-400 block bg-white w-full sm:w-96 border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
                               placeholder="Empowering Business Growth Through Innovation"
                             />
                           </div>
                         </div>
-                        <div className="text-start mb-5 space-y-2">
+                        <div className="mb-5 text-start space-y-2">
                           <label
                             className="text-md font-medium"
-                            htmlFor="answer"
+                            htmlFor="description"
                           >
-                            Answer
+                            Description
                           </label>
                           <textarea
-                            id="answer"
+                            id="description"
                             rows={10}
                             cols={50}
-                            {...register("answer", { required: true })}
+                            {...register("description", { required: true })}
                             className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
                             placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
                           />
+                        </div>
+                        <div className="mb-5 text-start space-y-2">
+                          <div className="flex flex-col space-y-2">
+                            <label
+                              className="text-md font-medium"
+                              htmlFor="image"
+                            >
+                              Image
+                            </label>
+                            <input
+                              id="image"
+                              type="file"
+                              {...register("image", { required: false })}
+                              className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

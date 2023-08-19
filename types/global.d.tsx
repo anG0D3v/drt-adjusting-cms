@@ -3,6 +3,7 @@ export type T_EditAboutUs = {
   content: string;
   created_by: number;
 };
+
 export type T_EditFaqs = {
   question: string;
   answer: string;

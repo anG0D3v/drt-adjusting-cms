@@ -4,7 +4,7 @@ import FaqsTable from "@/components/Faqs/FaqsTable";
 import Content from "@/components/Faqs/Content";
 import EditFaqs from "@/components/Faqs/EditFaqs";
 import DeleteFaqs from "@/components/Faqs/DeleteFaqs";
-function page() {
+function Page() {
   const [faqsData, setFaqsData] = useState([]);
   const [dataUpdate, setDataUpdate] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -65,4 +65,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

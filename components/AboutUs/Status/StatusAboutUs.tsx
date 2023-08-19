@@ -6,6 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
 
 type AboutUs = {
   title: string;
@@ -30,6 +31,8 @@ export default function StatusAboutUs({
   setDataUpdate: Dispatch<boolean>;
   dataUpdate: boolean;
 }) {
+  const { data: session } = useSession();
+  const sessionUser = session?.user;
   const cancelButtonRef = useRef(null);
   const newItem = AboutUsData.filter((item) => {
     return item.id == currentId;
@@ -39,13 +42,18 @@ export default function StatusAboutUs({
     try {
       await axios
         .put(`${process.env.DEV_API}/api/about-us/toggle?id=${currentId}`, {
-          updated_by: "1",
+          updated_by: sessionUser?.name,
         })
         .then((res) => {
           console.log(res);
 
           if (res.status >= 200 && res.status <= 300) {
-            toast.success("Successfully Updated a Content", { duration: 4000 });
+            toast.success(
+              `Successfully ${
+                newItem[0].status ? "Disabled" : "Enabled"
+              } a Content`,
+              { duration: 4000 }
+            );
             setDataUpdate(!dataUpdate);
           } else {
             toast.error("Something Went Wrong!", { duration: 4000 });
@@ -81,7 +89,7 @@ export default function StatusAboutUs({
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -119,7 +127,7 @@ export default function StatusAboutUs({
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <div className="mt-5 flex flex-row-reverse">
                   <button
                     type="button"
                     className="py-2 px-5 rounded-md ml-3 text-shady-white bg-steel-blue transition-all hover:scale-95"

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
-function page() {
+function Page() {
   const { data: session, status } = useSession();
   console.log(status);
 
@@ -117,4 +117,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

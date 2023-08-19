@@ -96,7 +96,7 @@ export default function EditAboutUs({
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -133,7 +133,7 @@ export default function EditAboutUs({
                     </Dialog.Title>
                     <div className="mt-2">
                       <div className="">
-                        <div className="block sm:flex sm:space-x-10 space-y-8 sm:space-y-0 mb-8">
+                        <div className="block text-start sm:flex sm:space-x-10 space-y-8 sm:space-y-0 mb-5">
                           <div className="space-y-2">
                             <label
                               className="text-md font-medium"
@@ -150,7 +150,7 @@ export default function EditAboutUs({
                             />
                           </div>
                         </div>
-                        <div className="mb-10 space-y-2">
+                        <div className="text-start mb-5 space-y-2">
                           <label
                             className="text-md font-medium"
                             htmlFor="description"
@@ -170,7 +170,7 @@ export default function EditAboutUs({
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <div className="mt-5 flex flex-row-reverse">
                   <button
                     type="button"
                     className="py-2 px-5 rounded-md ml-3 text-shady-white bg-steel-blue transition-all hover:scale-95"

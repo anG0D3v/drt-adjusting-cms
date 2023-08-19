@@ -57,7 +57,7 @@ function SideNavbar({
     <>
       {sessionUser && (
         <div
-          className={`py-16 bg-dark-blue fixed h-screen transition-all ${
+          className={`py-16 bg-dark-blue fixed z-10 h-screen transition-all ${
             sidebarOpen
               ? "top-24 sm:top-32 left-0"
               : "top-24 sm:top-32 -left-[356.75px]"

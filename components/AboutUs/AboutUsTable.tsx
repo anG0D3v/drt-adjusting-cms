@@ -15,8 +15,9 @@ type AboutUs = {
   content?: string;
   created_by?: number;
   status?: boolean;
-  id?: number;
-  ModifiedByUser?: { id: number } | null;
+  id: number;
+  CreatedByUser?: { username: string } | null;
+  ModifiedByUser?: { username: string } | null;
 }[];
 
 function AboutUsTable({
@@ -43,23 +44,14 @@ function AboutUsTable({
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
   // Current Viewed Data
-  const currentPost = AboutUsData.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPost = AboutUsData.sort((a, b) => b.id - a.id).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
 
   const thereIsActiveData = AboutUsData.some((item) => {
     return item.status === true;
   });
-
-  // const filteredData =
-  //   AboutUsData &&
-  //   AboutUsData.filter((item) => {
-  //     const status = item.status ? "disable" : "enable";
-
-  //     return (
-  //       item.title?.toLowerCase().includes(searchItem.toLowerCase()) ||
-  //       item.content?.toLowerCase().includes(searchItem.toLowerCase()) ||
-  //       status.toLowerCase().includes(searchItem.toLowerCase())
-  //     );
-  //   });
 
   // Choose between search item or pagination
   const filteredData =
@@ -83,7 +75,7 @@ function AboutUsTable({
 
   return (
     <Fragment>
-      <div className="relative rounded-md shadow-sm">
+      <div className="relative rounded-md shadow-sm mb-5">
         <input
           onChange={(e) => {
             setSearchItem(e.target.value);
@@ -115,18 +107,6 @@ function AboutUsTable({
                     <tr>
                       <th
                         scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Action
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Id
-                      </th>
-                      <th
-                        scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                       >
                         Title
@@ -149,78 +129,76 @@ function AboutUsTable({
                       >
                         Modified By
                       </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {filteredData
-                      .slice(0)
-                      .reverse()
-                      .map((item, index) => (
-                        <tr key={index}>
-                          <td className=" py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <div className="block">
-                              <button
-                                onClick={() => {
-                                  // check there is active data
-                                  if (
-                                    item.status == false &&
-                                    thereIsActiveData
-                                  ) {
-                                    setOpenWarningModal(true);
-                                  } else {
-                                    setStatusModalOpen(true);
-                                    setCurrentId(item.id as number);
-                                  }
-                                }}
-                                type="button"
-                                className={`${
-                                  item.status ? "bg-maroon/90" : "bg-blue-500"
-                                } flex py-2 px-5 mb-2 rounded-md text-shady-white transition-all hover:scale-95`}
-                              >
-                                <FontAwesomeIcon
-                                  icon={
-                                    item.status ? faCircleCheck : faXmarkCircle
-                                  }
-                                  className="h-5 w-5 mr-1"
-                                />
-                                {item.status ? "Disable" : "Enable"}
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setIsOpen(true);
+                    {filteredData.map((item, index) => (
+                      <tr key={index}>
+                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                          {item.title}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          {item.content}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          {item.CreatedByUser?.username !== null
+                            ? item.CreatedByUser?.username
+                            : ""}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          {item.ModifiedByUser?.username !== null
+                            ? item.ModifiedByUser?.username
+                            : ""}
+                        </td>
+                        <td className=" py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                          <div className="block">
+                            <button
+                              onClick={() => {
+                                // check there is active data
+                                if (item.status == false && thereIsActiveData) {
+                                  setOpenWarningModal(true);
+                                } else {
+                                  setStatusModalOpen(true);
                                   setCurrentId(item.id as number);
-                                }}
-                                type="button"
-                                className="flex py-2 px-5 rounded-md text-shady-white bg-gunmetal transition-all hover:scale-95"
-                              >
-                                <FontAwesomeIcon
-                                  icon={faPenToSquare}
-                                  className="h-5 w-5 mr-1"
-                                />
-                                Edit
-                              </button>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500">
-                            {item.id}
-                          </td>
-
-                          <td className="px-3 py-4 text-sm text-gray-500">
-                            {item.title}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500">
-                            {item.content}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500">
-                            {item.created_by}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500">
-                            {item.ModifiedByUser?.id !== null
-                              ? item.ModifiedByUser?.id
-                              : ""}
-                          </td>
-                        </tr>
-                      ))}
+                                }
+                              }}
+                              type="button"
+                              className={`${
+                                item.status ? "bg-maroon/90" : "bg-blue-500"
+                              } flex py-2 px-5 mb-2 rounded-md text-shady-white transition-all hover:scale-95`}
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  item.status ? faCircleCheck : faXmarkCircle
+                                }
+                                className="h-5 w-5 mr-1"
+                              />
+                              {item.status ? "Disable" : "Enable"}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setIsOpen(true);
+                                setCurrentId(item.id as number);
+                              }}
+                              type="button"
+                              className="flex py-2 px-5 rounded-md text-shady-white bg-gunmetal transition-all hover:scale-95"
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="h-5 w-5 mr-1"
+                              />
+                              Edit
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
