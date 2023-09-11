@@ -1,4 +1,3 @@
-"use client";
 import "./globals.css";
 import React, { ReactNode, useState } from "react";
 import type { Metadata } from "next";
@@ -8,8 +7,7 @@ import SideNavbar from "@/components/Navigation/SideNavbar";
 import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "./Providers";
 import { Toaster } from "react-hot-toast";
-import { useSession } from "next-auth/react";
-
+import MainNavigation from "@/components/MainNavigation";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,13 +26,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  session,
 }: {
   children: React.ReactNode;
-  session: any;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
   return (
     <html lang="en">
       <link rel="icon" type="image/x-icon" href={`/img/companyFavicon.png`} />
@@ -43,21 +37,7 @@ export default function RootLayout({
         className={`bg-[#F1F1F1] bg-cover bg-no-repeat relative ${inter.className}`}
       >
         <AuthProvider>
-          <Navigation
-            setSidebarOpen={setSidebarOpen}
-            sidebarOpen={sidebarOpen}
-          />
-          <div className="pt-[95px] lg:pt-[135px] flex justify-center sm:justify-start">
-            <SideNavbar
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-
-            <div className="lg:ps-96 overflow-auto">
-              {children}
-              <Toaster position="top-right" reverseOrder={true} />
-            </div>
-          </div>
+          <MainNavigation>{children}</MainNavigation>
         </AuthProvider>
       </body>
     </html>
