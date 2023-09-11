@@ -1,4 +1,4 @@
-import { Fragment, useState, Dispatch, useEffect } from "react";
+import { Fragment, useState, Dispatch, useEffect, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { T_EditAboutUs } from "@/types/global.d";
@@ -8,7 +8,12 @@ import {
 } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { QUILL_FORMATS, QUILL_MODULES } from "@/helpers/constant";
+
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+
+import "react-quill/dist/quill.snow.css";
 
 type AboutUs = {
   title: string;
@@ -33,6 +38,11 @@ export default function EditAboutUs({
   setDataUpdate: Dispatch<boolean>;
   dataUpdate: boolean;
 }) {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    [isOpen]
+  );
+
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
@@ -42,7 +52,7 @@ export default function EditAboutUs({
     return item.id == currentId;
   });
 
-  const { register, handleSubmit, reset, setValue } = useForm<T_EditAboutUs>({
+  const { register, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: {
       title: newItem[0].title,
       content: newItem[0].content,
@@ -56,35 +66,41 @@ export default function EditAboutUs({
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
-    const toastId = toast.loading("Loading...");
-    setIsLoading(true);
-    try {
-      await axios
-        .patch(`${process.env.DEV_API}/api/about-us/update?id=${currentId}`, {
-          title: data.title,
-          content: data.content,
-          updated_by: sessionUser?.name,
-        })
-        .then((res) => {
-          if (res.status >= 200 && res.status <= 300) {
-            toast.success("Successfully Updated a Content", { duration: 4000 });
-            setDataUpdate(!dataUpdate);
-            toast.dismiss(toastId);
-            setIsLoading(false);
-          } else {
-            toast.error("Something Went Wrong!", { duration: 4000 });
-            toast.dismiss(toastId);
-            setIsLoading(false);
-          }
-        });
-    } catch (error) {
-      console.log(error);
-      const axiosError = error as AxiosError<any>;
-      toast.error("Something Went Wrong!", { duration: 4000 });
-      toast.dismiss(toastId);
-      setIsLoading(false);
+    if (data.content == "<p><br></p>") {
+      toast.error("Description is required!");
+    } else {
+      const toastId = toast.loading("Loading...");
+      setIsLoading(true);
+      try {
+        await axios
+          .patch(`${process.env.DEV_API}/api/about-us/update?id=${currentId}`, {
+            title: data.title,
+            content: data.content,
+            updated_by: sessionUser?.name,
+          })
+          .then((res) => {
+            if (res.status >= 200 && res.status <= 300) {
+              toast.success("Successfully Updated a Content", {
+                duration: 4000,
+              });
+              setDataUpdate(!dataUpdate);
+              toast.dismiss(toastId);
+              setIsLoading(false);
+            } else {
+              toast.error("Something Went Wrong!", { duration: 4000 });
+              toast.dismiss(toastId);
+              setIsLoading(false);
+            }
+          });
+      } catch (error) {
+        console.log(error);
+        const axiosError = error as AxiosError<any>;
+        toast.error("Something Went Wrong!", { duration: 4000 });
+        toast.dismiss(toastId);
+        setIsLoading(false);
+      }
+      setIsOpen(false);
     }
-    setIsOpen(false);
   });
 
   return (
@@ -160,18 +176,31 @@ export default function EditAboutUs({
                         <div className="text-start mb-5 space-y-2">
                           <label
                             className="text-md font-medium"
-                            htmlFor="description"
+                            htmlFor="content"
                           >
-                            Description
+                            Description{" "}
+                            <span className="text-sm text-gray-700">
+                              ( limit of 255 characters )
+                            </span>
                           </label>
-                          <textarea
-                            id="description"
-                            rows={10}
-                            cols={50}
-                            {...register("content", { required: true })}
-                            className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
-                          />
+                          <div className="h-80">
+                            <textarea
+                              rows={4}
+                              {...register("content", {
+                                required: true,
+                              })}
+                              id="content"
+                              hidden
+                            />
+                            <ReactQuill
+                              className="h-60 sm:h-64"
+                              theme="snow"
+                              formats={QUILL_FORMATS}
+                              modules={QUILL_MODULES}
+                              defaultValue={getValues("content")}
+                              onChange={(value) => setValue("content", value)}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

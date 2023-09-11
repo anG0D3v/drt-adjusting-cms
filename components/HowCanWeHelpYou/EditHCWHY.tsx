@@ -1,4 +1,4 @@
-import { Fragment, useState, Dispatch, useEffect } from "react";
+import { Fragment, useState, Dispatch, useEffect, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import {
@@ -7,7 +7,11 @@ import {
 } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { QUILL_FORMATS, QUILL_MODULES } from "@/helpers/constant";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 
 type HowCanWeHelpYou = {
   title: string;
@@ -31,6 +35,11 @@ export default function EditHCWHY({
   setDataUpdate: Dispatch<boolean>;
   dataUpdate: boolean;
 }) {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    [isOpen]
+  );
+
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
@@ -39,7 +48,7 @@ export default function EditHCWHY({
   const newItem = HowCanWeHelpYouData.filter((item) => {
     return item.id == currentId;
   });
-  const { register, handleSubmit, reset, setValue } = useForm({
+  const { register, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: {
       title: newItem[0].title,
       description: newItem[0].description,
@@ -47,48 +56,57 @@ export default function EditHCWHY({
       image: "",
     },
   });
+  console.log(newItem[0].description);
 
-  // to reset the defaultValues wheneven isOpen is triggered
+  // to reset the defaultValues whenever isOpen is triggered
   useEffect(() => {
     reset({ title: newItem[0].title, description: newItem[0].description });
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
-    const toastId = toast.loading("Loading...");
-    setIsLoading(true);
-    try {
-      var formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      if (data.image[0] !== undefined && data.image[0] !== null) {
-        formData.append("file", data?.image[0]);
-      }
-      formData.append("updated_by", sessionUser?.name as string);
+    console.log(data);
+    if (data.description == "<p><br></p>") {
+      toast.error("Description is required");
+    } else {
+      const toastId = toast.loading("Loading...");
+      setIsLoading(true);
+      try {
+        var formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        if (data.image[0] !== undefined && data.image[0] !== null) {
+          formData.append("file", data?.image[0]);
+        }
+        formData.append("updated_by", sessionUser?.name as string);
 
-      await axios
-        .put(
-          `${process.env.DEV_API}/api/services/update?id=${currentId}`,
-          formData
-        )
-        .then((res) => {
-          if (res.status >= 200 && res.status <= 300) {
-            toast.success("Successfully Updated a Content", { duration: 4000 });
-            toast.dismiss(toastId);
-            setDataUpdate(!dataUpdate);
-            setIsLoading(false);
-          } else {
-            toast.error("Something Went Wrong!", { duration: 4000 });
-            toast.dismiss(toastId);
-            setIsLoading(false);
-          }
-        });
-    } catch (error) {
-      const axiosError = error as AxiosError<any>;
-      toast.error("Something Went Wrong!", { duration: 4000 });
-      toast.dismiss(toastId);
-      setIsLoading(false);
+        await axios
+          .put(
+            `${process.env.DEV_API}/api/services/update?id=${currentId}`,
+            formData
+          )
+          .then((res) => {
+            if (res.status >= 200 && res.status <= 300) {
+              toast.success("Successfully Updated a Content", {
+                duration: 4000,
+              });
+              toast.dismiss(toastId);
+              setDataUpdate(!dataUpdate);
+              setIsLoading(false);
+            } else {
+              toast.error("Something Went Wrong!", { duration: 4000 });
+              toast.dismiss(toastId);
+              setIsLoading(false);
+            }
+          });
+      } catch (error) {
+        const axiosError = error as AxiosError<any>;
+        toast.error("Something Went Wrong!", { duration: 4000 });
+        toast.dismiss(toastId);
+        setIsLoading(false);
+      }
+      setDataUpdate(!dataUpdate);
+      setIsOpen(false);
     }
-    setIsOpen(false);
   });
 
   return (
@@ -143,7 +161,7 @@ export default function EditHCWHY({
                       </span>
                     </Dialog.Title>
                     <div className="mt-2">
-                      <div className="">
+                      <div>
                         <div className="block text-start sm:flex sm:space-x-10 space-y-8 sm:space-y-0 mb-5">
                           <div className="space-y-2">
                             <label
@@ -166,16 +184,31 @@ export default function EditHCWHY({
                             className="text-md font-medium"
                             htmlFor="description"
                           >
-                            Description
+                            Description{" "}
+                            <span className="text-sm text-gray-700">
+                              ( limit of 255 characters )
+                            </span>
                           </label>
-                          <textarea
-                            id="description"
-                            rows={10}
-                            cols={50}
-                            {...register("description", { required: true })}
-                            className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
-                          />
+                          <div className="h-80">
+                            <textarea
+                              rows={4}
+                              {...register("description", {
+                                required: true,
+                              })}
+                              id="description"
+                              hidden
+                            />
+                            <ReactQuill
+                              className="h-60 sm:h-64"
+                              theme="snow"
+                              formats={QUILL_FORMATS}
+                              modules={QUILL_MODULES}
+                              defaultValue={getValues("description")}
+                              onChange={(value) =>
+                                setValue("description", value)
+                              }
+                            />
+                          </div>
                         </div>
                         <div className="mb-5 text-start space-y-2">
                           <div className="flex flex-col space-y-2">

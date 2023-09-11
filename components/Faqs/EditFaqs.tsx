@@ -1,4 +1,4 @@
-import { Fragment, useState, Dispatch, useEffect } from "react";
+import { Fragment, useState, Dispatch, useEffect, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { T_EditFaqs } from "@/types/global.d";
@@ -8,7 +8,9 @@ import {
 } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { QUILL_FORMATS, QUILL_MODULES } from "@/helpers/constant";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 
 type Faqs = {
   id: number;
@@ -32,6 +34,11 @@ export default function EditFaqs({
   setDataUpdate: Dispatch<boolean>;
   dataUpdate: boolean;
 }) {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    [isOpen]
+  );
+
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
@@ -41,13 +48,14 @@ export default function EditFaqs({
     return item.id == currentId;
   });
 
-  const { register, handleSubmit, reset, setValue } = useForm<T_EditFaqs>({
-    defaultValues: {
-      question: newItem[0].question,
-      answer: newItem[0].answer,
-      created_by: newItem[0].created_by,
-    },
-  });
+  const { register, handleSubmit, reset, setValue, getValues } =
+    useForm<T_EditFaqs>({
+      defaultValues: {
+        question: newItem[0].question,
+        answer: newItem[0].answer,
+        created_by: newItem[0].created_by,
+      },
+    });
 
   // to reset the defaultValues wheneven isOpen is triggered
   useEffect(() => {
@@ -55,35 +63,41 @@ export default function EditFaqs({
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
-    const toastId = toast.loading("Loading...");
-    setIsLoading(true);
-    try {
-      await axios
-        .put(`${process.env.DEV_API}/api/faqs/update?id=${currentId}`, {
-          question: data.question,
-          answer: data.answer,
-          updated_by: sessionUser?.name,
-        })
-        .then((res) => {
-          if (res.status >= 200 && res.status <= 300) {
-            toast.success("Successfully Updated a Content", { duration: 4000 });
-            toast.dismiss(toastId);
-            setDataUpdate(!dataUpdate);
-            setIsLoading(false);
-          } else {
-            toast.error("Something Went Wrong!", { duration: 4000 });
-            toast.dismiss(toastId);
-            setIsLoading(false);
-          }
-        });
-    } catch (error) {
-      const axiosError = error as AxiosError<any>;
+    if (data.answer == "<p><br></p>") {
+      toast.error("Answer is required");
+    } else {
+      const toastId = toast.loading("Loading...");
+      setIsLoading(true);
+      try {
+        await axios
+          .put(`${process.env.DEV_API}/api/faqs/update?id=${currentId}`, {
+            question: data.question,
+            answer: data.answer,
+            updated_by: sessionUser?.name,
+          })
+          .then((res) => {
+            if (res.status >= 200 && res.status <= 300) {
+              toast.success("Successfully Updated a Content", {
+                duration: 4000,
+              });
+              toast.dismiss(toastId);
+              setDataUpdate(!dataUpdate);
+              setIsLoading(false);
+            } else {
+              toast.error("Something Went Wrong!", { duration: 4000 });
+              toast.dismiss(toastId);
+              setIsLoading(false);
+            }
+          });
+      } catch (error) {
+        const axiosError = error as AxiosError<any>;
 
-      toast.error("Something Went Wrong!", { duration: 4000 });
-      toast.dismiss(toastId);
-      setIsLoading(false);
+        toast.error("Something Went Wrong!", { duration: 4000 });
+        toast.dismiss(toastId);
+        setIsLoading(false);
+      }
+      setIsOpen(false);
     }
-    setIsOpen(false);
   });
 
   return (
@@ -158,16 +172,29 @@ export default function EditFaqs({
                             className="text-md font-medium"
                             htmlFor="answer"
                           >
-                            Answer
+                            Answer{" "}
+                            <span className="text-sm text-gray-700">
+                              ( limit of 255 characters )
+                            </span>
                           </label>
-                          <textarea
-                            id="answer"
-                            rows={10}
-                            cols={50}
-                            {...register("answer", { required: true })}
-                            className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec."
-                          />
+                          <div className="h-80">
+                            <textarea
+                              rows={4}
+                              {...register("answer", {
+                                required: true,
+                              })}
+                              id="answer"
+                              hidden
+                            />
+                            <ReactQuill
+                              className="h-60 sm:h-64"
+                              theme="snow"
+                              formats={QUILL_FORMATS}
+                              modules={QUILL_MODULES}
+                              defaultValue={getValues("answer")}
+                              onChange={(value) => setValue("answer", value)}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

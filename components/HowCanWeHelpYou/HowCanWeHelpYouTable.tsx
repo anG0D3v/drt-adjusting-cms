@@ -146,9 +146,12 @@ function HowCanWeHelpYouTable({
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           {item.title}
                         </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.description}
-                        </td>
+                        <td
+                          className="px-3 py-4 text-sm text-gray-500"
+                          dangerouslySetInnerHTML={{
+                            __html: item.description || "",
+                          }}
+                        ></td>
                         <td className="px-3 py-4 text-sm text-gray-500">
                           {item.image_url !== null && (
                             <Image

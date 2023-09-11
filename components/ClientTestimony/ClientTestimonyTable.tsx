@@ -180,9 +180,12 @@ function ClientTestimonyTable({
                         <td className="px-3 py-4 text-sm text-gray-500">
                           {item.company_name}
                         </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.content}
-                        </td>
+                        <td
+                          className="px-3 py-4 text-sm text-gray-500"
+                          dangerouslySetInnerHTML={{
+                            __html: item.content || "",
+                          }}
+                        ></td>
                         <td className="px-3 py-4 text-sm text-gray-500">
                           {item.CreatedByUser?.username !== null
                             ? item.CreatedByUser?.username

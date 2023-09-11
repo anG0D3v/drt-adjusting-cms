@@ -69,7 +69,7 @@ function SideNavbar({
                   return (
                     <Link key={index} href={item.link}>
                       <li
-                        className={`transition-all py-5 pl-10 pr-28 hover:bg-gunmetal cursor-pointer flex ${
+                        className={`ms-0 transition-all py-5 pl-10 pr-28 hover:bg-gunmetal cursor-pointer flex ${
                           params == item.link ? "bg-gunmetal" : ""
                         }`}
                       >
