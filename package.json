@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "env-cmd -f .env.development next dev",
-    "dev:prod": "env-cmd -f .env.production next dev",
+    "dev:prod": "copy .env.development.example .env.development && env-cmd -f .env.production next dev",
     "build": "env-cmd -f .env.development next build",
-    "build:prod": "env-cmd -f .env.production next build",
+    "build:prod": "copy .env.production.example .env.production && env-cmd -f .env.production next build",
     "start": "env-cmd -f .env.development next start",
     "start:prod": "env-cmd -f .env.production next start",
     "lint": "next lint"
