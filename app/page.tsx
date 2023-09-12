@@ -23,7 +23,6 @@ function Page() {
 
         setHowCanWeHelpYouData(response.data);
       } catch (error) {
-        console.log(error);
       }
     };
     fetchItem();

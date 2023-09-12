@@ -48,7 +48,6 @@ export default function StatusAboutUs({
           updated_by: sessionUser?.name,
         })
         .then((res) => {
-          console.log(res);
 
           if (res.status >= 200 && res.status <= 300) {
             toast.success(

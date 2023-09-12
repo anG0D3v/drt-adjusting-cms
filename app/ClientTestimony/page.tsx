@@ -24,7 +24,6 @@ function Page() {
 
         setClientTestimonyData(response.data);
       } catch (error) {
-        console.log(error);
       }
     };
     fetchItem();

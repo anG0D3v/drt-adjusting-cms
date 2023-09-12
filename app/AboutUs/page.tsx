@@ -25,9 +25,7 @@ function Page() {
           return res.json();
         });
         setAboutUsData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
     fetchItem();
   }, [dataUpdate]);

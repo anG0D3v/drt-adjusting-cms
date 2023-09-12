@@ -56,7 +56,6 @@ export default function EditHCWHY({
       image: "",
     },
   });
-  console.log(newItem[0].description);
 
   // to reset the defaultValues whenever isOpen is triggered
   useEffect(() => {
@@ -64,7 +63,6 @@ export default function EditHCWHY({
   }, [isOpen]);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     if (data.description == "<p><br></p>") {
       toast.error("Description is required");
     } else {

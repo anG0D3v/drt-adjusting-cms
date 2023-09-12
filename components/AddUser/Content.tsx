@@ -21,7 +21,6 @@ function Page() {
           password: data.password,
         })
         .then((res) => {
-          console.log(res);
 
           if (res.status >= 200 && res.status <= 300) {
             toast.success("Successfully Added a User", { duration: 4000 });
@@ -36,7 +35,6 @@ function Page() {
         });
     } catch (error) {
       const axiosError = error as AxiosError<any>;
-      console.log(axiosError);
 
       setError(axiosError?.response?.data.message);
       toast.error("Something Went Wrong!", { duration: 4000 });

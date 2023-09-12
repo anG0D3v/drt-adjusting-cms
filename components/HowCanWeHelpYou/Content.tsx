@@ -27,12 +27,10 @@ function Content({
   // to here
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
 
     if (data.content == "<p><br></p>") {
       toast.error("Description is required");
     } else {
-      console.log(data);
 
       setIsLoading(true);
       const toastId = toast.loading("Loading...");

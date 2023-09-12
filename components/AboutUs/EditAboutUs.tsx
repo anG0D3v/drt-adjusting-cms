@@ -93,7 +93,6 @@ export default function EditAboutUs({
             }
           });
       } catch (error) {
-        console.log(error);
         const axiosError = error as AxiosError<any>;
         toast.error("Something Went Wrong!", { duration: 4000 });
         toast.dismiss(toastId);

@@ -22,7 +22,6 @@ function Page() {
         });
         setFaqsData(response.data);
       } catch (error) {
-        console.log(error);
       }
     };
     fetchItem();
